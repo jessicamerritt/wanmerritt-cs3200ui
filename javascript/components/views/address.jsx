@@ -30,7 +30,7 @@ export default class Address extends React.Component{
 
     render() {
         return (
-            <div>
+            <div className="content">
                 <WebHeader />
                 <div>
                     <AddressTable addresses={this.state.addresses}/>

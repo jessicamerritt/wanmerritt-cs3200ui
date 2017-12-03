@@ -3,6 +3,18 @@ body {
   background: $backgroundColor;
 }
 
+.btn-circle {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.42;
+  border-radius: 30px;
+  color: white;
+  background-color: red;
+}
+
 #footer {
   background:#333;
   font-size:15px;
@@ -22,7 +34,42 @@ body {
   }
 }
 
-
 .content {
-  padding-top: 45px;
+  padding-top: 60px;
+}
+
+.popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0,0,0, 0.5);
+
+
+}
+.popup_inner {
+  position: absolute;
+  display: inline-block;
+  left: 25%;
+  right: 25%;
+  top: 25%;
+  margin: auto;
+  background: white;
+  border-radius: 20px;
+
+  h1 {
+    font-size: 2.5vw;
+  }
+
+  .close-button {
+    margin-top: 1px;
+    margin-right: 2px;
+    position:absolute;
+    top:0;
+    right:0;
+  }
 }
