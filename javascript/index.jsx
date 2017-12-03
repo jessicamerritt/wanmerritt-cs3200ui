@@ -6,6 +6,7 @@ require('./stylesheets/base.scss');
 require('./stylesheets/home.scss');
 require('./stylesheets/study.scss');
 require('./stylesheets/address.scss');
+require('./stylesheets/drug.scss');
 ReactDom.render(
     <Router history={browserHistory} routes={routes} />,
     document.querySelector('#app')

@@ -1,18 +1,18 @@
 import React from 'react';
-import Address from './rows/Address.js';
+import DrugRow from './rows/drugRow';
 
-class AddressTable extends React.Component {
+class DrugTable extends React.Component {
     render() {
         var rows = [];
-        this.props.addresses.forEach(function(address) {
-            rows.push(<Address address={address} key={address.addressId}/>);
+        this.props.drugs.forEach(function(drug) {
+            rows.push(<DrugRow drug={drug} key={drug.drugId}/>);
         });
         return (
             <div className="container">
                 <table className="table table-striped">
                     <thead>
                     <tr>
-                        <th>Street Address</th><th>City</th><th>State</th><th>Zip Code</th>
+                        <th>Market Name</th><th>Scientific Name</th><th>Success Count</th><th>Toxicity</th><th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>{rows}</tbody>
@@ -21,7 +21,4 @@ class AddressTable extends React.Component {
     }
 }
 
-export default AddressTable;
-
-
-
+export default DrugTable;
