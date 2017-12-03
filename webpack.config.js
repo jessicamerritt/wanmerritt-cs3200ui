@@ -4,9 +4,9 @@ module.exports = {
     context: __dirname,
     entry: "./javascript/index.jsx",
     output: {
-        path: __dirname + '/dist',
+        path: __dirname + '/public',
         filename: "bundle.js",
-       // publicPath: '/public/'
+        publicPath: '/public/'
     },
     module: {
         loaders: [

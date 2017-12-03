@@ -14,7 +14,7 @@ export default class Address extends React.Component{
 
     loadAddressesFromServer() {
         var self = this;
-        fetch("/api/address/all"
+        fetch("http://localhost:8080/api/address/all"
         ).then(function(response) {
             return response.json();
         }).then(function (data) {

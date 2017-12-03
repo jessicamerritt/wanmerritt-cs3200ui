@@ -24,6 +24,9 @@ export default class WebHeader extends Component {
                         <li className="nav-item">
                             <Link className="nav-link" to="/drug"> Drugs</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/patient"> Patients</Link>
+                        </li>
                     </ul>
                 </div>
             </nav>
