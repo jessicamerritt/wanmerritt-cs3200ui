@@ -1,0 +1,24 @@
+$backgroundColor: white;
+body {
+  background: $backgroundColor;
+}
+
+#footer {
+  background:#333;
+  font-size:15px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  img {
+    max-height:50px;
+    filter: grayscale(100%);
+  }
+
+  color:#ccc;
+
+  a {
+    color:#fff;
+  }
+}
+

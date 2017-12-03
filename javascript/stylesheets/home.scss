@@ -1,0 +1,160 @@
+$gwc-green: #6eceb2;
+$gwc-blue: #01426a;
+$gwc-yellow: #ece81a;
+$gwc-red: #f4364c;
+
+@mixin transition($time) {
+  -webkit-transition:all $time ease;
+  -moz-transition:all $time ease;
+  -o-transition:all $time ease;
+  transition:all $time ease-in-out;
+}
+
+
+
+h1 {
+  font-size:50px;
+}
+
+h3 {
+  text-align: center;
+  margin:30px 0;
+}
+
+a, a:hover {
+  text-decoration: none;
+  @include transition(0.3s);
+}
+
+
+
+.row {
+  padding:20px 0;
+}
+
+.container-fluid {
+  box-sizing: border-box;
+}
+
+.banner {
+  position:absolute;
+  height:calc(100vh - 56px);
+  width:100%;
+  margin:0 -15px;
+  text-align:center;
+  margin-top:56px;
+  background:rgba(0, 0, 0, 0.3);
+  color:#fff;
+
+  img {
+    max-width:calc(100% - 100px);
+    border-bottom:2px dotted $gwc-red;
+  }
+
+  h1 {
+    margin-bottom:40px;
+    text-transform: uppercase;
+    color: #fff;
+    font-size:5vw;
+    font-weight: bold;
+    margin-top:10px;
+  }
+}
+
+#meeting-information {
+  margin:0px;
+
+  i {
+    font-size:40px;
+  }
+}
+
+#bannerbg {
+  height:100vh;
+  background-image:url("https://static.pexels.com/photos/40559/medic-hospital-laboratory-medical-40559.jpeg");
+  background-attachment: fixed;
+  background-position:top center;
+  background-size: cover;
+
+}
+
+#site-information {
+  padding:50px 0;
+  text-align:center;
+  background:#fff;
+
+  img {
+    max-width: 100%;
+    margin-top:30px;
+  }
+
+  p {
+    text-align: left;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+#get-involved {
+  background:#eee;
+  color:#888;
+
+  a {
+    color:#888;
+  }
+
+  input, textarea {
+    background:#fff;
+    color:#888;
+    border:2px solid $gwc-green;
+    margin-bottom:20px;
+    padding:10px;
+    width:100%;
+
+  }
+
+  #send-button {
+    border:none;
+    background:$gwc-green;
+    color:#fff;
+    padding:10px 0;
+    text-transform:uppercase;
+    font-size:12px;
+    font-weight:bold;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color:#ccc;
+  }
+
+  input {
+    padding:10px;
+  }
+}
+
+#last-meeting {
+  h2 {
+    text-align: center
+  }
+
+  background:#666;
+}
+
+
+
+
+@media screen and (max-width: 970px) {
+
+  h1 {
+    font-size:30px;
+    margin-bottom:15px;
+  }
+
+  .banner img {
+    max-height:100px;
+  }
+
+  #meeting-information i {
+    font-size:20px;
+  }
+}
