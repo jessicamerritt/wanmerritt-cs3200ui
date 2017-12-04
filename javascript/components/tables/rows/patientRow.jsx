@@ -22,7 +22,6 @@ class PatientRow extends React.Component {
 
     render() {
         if (this.state.visible==false) return null;
-        console.log(this.props.patient);
         return (
             <tr>
                 <td>{this.props.patient.patientId}</td>
@@ -34,7 +33,7 @@ class PatientRow extends React.Component {
                 <td>{this.props.patient.ethnicity}</td>
                 <td>{this.props.patient.placebo}</td>
                 <td>
-                    null
+                    <button className="btn btn-primary" onClick={() => console.log(this.props.patient.patientId)}>Update Info</button>
                 </td>
             </tr>);
     }

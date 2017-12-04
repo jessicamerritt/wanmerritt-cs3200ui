@@ -18,7 +18,7 @@ export default class AddDrugForm extends React.Component {
 
         var self = this;
         self.props.onClose();
-        fetch('api/drug/new', {
+        fetch('http://localhost:8080/api/drug/new', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -53,6 +53,7 @@ export default class AddDrugForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
+
                 <label>
                     Market Name:
                     <input

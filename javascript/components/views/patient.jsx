@@ -3,6 +3,8 @@ import WebHeader from "../navigation/webHeader";
 import PatientTable from "../tables/PatientTable";
 import Popup from "../forms/popup";
 import AddDrugForm from "../forms/addDrugForm";
+import SelectValue from "../forms/selectValue";
+import AddPatientForm from "../forms/addPatientForm";
 
 export default class Patient extends Component {
     constructor(props) {
@@ -10,7 +12,11 @@ export default class Patient extends Component {
         this.state = {
             patients: {},
             showPopup: false,
-            currentStudyId: 4
+            currentStudy: {
+                id: 4,
+                title: 'Bleomycin for Hodgkin\'s Lymphoma',
+            },
+            studyList: []
         }
     }
 
@@ -22,7 +28,7 @@ export default class Patient extends Component {
 
     loadPatientsFromServer() {
         var self = this;
-        fetch("/api/patient/all"
+        fetch("http://localhost:8080/api/patient/all"
         ).then(function(response) {
             return response.json();
         }).then(function (data) {
@@ -36,9 +42,47 @@ export default class Patient extends Component {
         });
     }
 
+    selectStudy(val) {
+        this.setState({
+            currentStudy: {
+                id: val.id,
+                title: val.label,
+                condition: val.value,
+            }
+        })
+        this.loadPatientsFromServer();
+    }
+
+
+
+    loadStudiesFromServer() {
+        var self = this;
+        fetch("http://localhost:8080/api/study/all"
+        ).then(function(response) {
+            return response.json();
+        }).then(function (data) {
+            var simplified = data['#result-set-1'].map(function(study){
+                return {
+                    id: study.STUDY_ID,
+                    label: study.TITLE,
+                    value: study.CONDITON
+                };
+            });
+            var seen = {};
+           var studies = simplified.filter(function(val) {
+               var valId = val.id;
+               return seen[valId] ? false : (seen[valId] = true);
+            });
+
+            self.setState({studyList: studies});
+        });
+    }
+
+
 
     componentDidMount() {
         this.loadPatientsFromServer();
+        this.loadStudiesFromServer();
     }
 
     render() {
@@ -50,6 +94,14 @@ export default class Patient extends Component {
                     <h2> Patient Table </h2>
 
                     <div className="row justify-content-end">
+                        <div className="col col-lg-5">
+                            <h3>Selected Study: {this.state.currentStudy.title}</h3>
+                        </div>
+                        <div className="col col-lg-4">
+                            <SelectValue name="Select Study"
+                                         options={this.state.studyList}
+                                         onChange={this.selectStudy.bind(this)}/>
+                        </div>
                         <div className="col col-lg-2">
 
                             <button className="btn btn-primary" onClick={this.togglePopup.bind(this)}>Add Patient</button>
@@ -58,7 +110,8 @@ export default class Patient extends Component {
                     {this.state.showPopup ?
                         <Popup
                             header='Add Patient to Study'
-                            children={<AddDrugForm onSuccess={this.loadDrugsFromServer.bind(this)}
+                            children={<AddPatientForm onSuccess={this.loadPatientsFromServer.bind(this)}
+                                                      studyId={this.state.currentStudy.id}
                                                    onClose={this.togglePopup.bind(this)}/>}
                             closePopup={this.togglePopup.bind(this)}
                         />
@@ -66,7 +119,7 @@ export default class Patient extends Component {
                     }
 
                     <div>
-                        <PatientTable patients={this.state.patients[this.state.currentStudyId] || []}/>
+                        <PatientTable patients={this.state.patients[this.state.currentStudy.id] || []}/>
                     </div>
                 </div>
 
