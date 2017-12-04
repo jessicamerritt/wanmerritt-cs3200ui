@@ -10,7 +10,7 @@ class DrugRow extends React.Component {
 
     handleDelete() {
         var self = this;
-        fetch("/api/drug/delete?drugId=" + self.props.drug.drugId, {
+        fetch("http://localhost:8080/api/drug/delete?drugId=" + self.props.drug.drugId, {
             method: 'delete'
         }).then(function(response) {
             self.setState({visible: false});

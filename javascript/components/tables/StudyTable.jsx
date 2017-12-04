@@ -4,8 +4,9 @@ import StudyRow from './rows/studyRow';
 class StudyTable extends React.Component {
     render() {
         var rows = [];
+        var self = this;
         this.props.studies.forEach(function(study) {
-            rows.push(<StudyRow study={study} key={study.STUDY_ID}/>);
+            rows.push(<StudyRow study={study} onClose={self.props.onClose} drugs={self.props.drugs} key={study.STUDY_ID}/>);
         });
         return (
             <div className="container">

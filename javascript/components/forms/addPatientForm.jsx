@@ -31,27 +31,6 @@ export default class AddPatientForm extends React.Component {
 
     handleSubmit(event) {
 
-        console.log(JSON.stringify({
-            address: {
-                addressId: null,
-                city: this.state.city,
-                state: this.state.aState,
-                street: this.state.street,
-                zip: this.state.zip,
-            },
-            dob: this.state.dob,
-            ethnicity: this.state.ethnicity,
-            firstName: this.state.firstName,
-            healthy: this.state.healthy,
-            hometown: this.state.hometown,
-            lastName: this.state.lastName,
-            nationality: this.state.nationality,
-            patientId: null,
-            placebo: this.state.placebo,
-            race: this.state.race,
-            sex: this.state.sex,
-            studyId: this.props.studyId
-        }));
 
         var self = this;
         self.props.onClose();
@@ -72,7 +51,7 @@ export default class AddPatientForm extends React.Component {
                 dob: this.state.dob,
                 ethnicity: this.state.ethnicuty,
                 firstName: this.state.firstName,
-                healthy: this.state.healty,
+                healthy: this.state.healthy,
                 hometown: this.state.hometown,
                 lastName: this.state.lastName,
                 nationality: this.state.nationality,
@@ -225,7 +204,7 @@ export default class AddPatientForm extends React.Component {
                 </label>
                 <br />
                 <div className="row justify-content-center">
-                <input type="submit" value="Submit" />
+                <input className="btn btn-primary"  type="submit" value="Submit" />
                 </div>
             </form>
         );

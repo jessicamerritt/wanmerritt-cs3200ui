@@ -89,7 +89,7 @@ export default class AddDrugForm extends React.Component {
                         value={this.state.toxicity}
                         onChange={this.handleInputChange} />
                 </label>
-                <input type="submit" value="Submit" />
+                <input className="btn btn-primary"  type="submit" value="Submit" />
             </form>
         );
     }

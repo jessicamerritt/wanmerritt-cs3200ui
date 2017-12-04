@@ -3,6 +3,7 @@ import WebHeader from "../navigation/webHeader";
 import DBFooter from "../navigation/dbFooter";
 import Popup from "../forms/popup";
 import StudyTable from "../tables/StudyTable";
+import AddStudyForm from "../forms/addStudyForm";
 
 export default class Study extends Component {
 
@@ -48,7 +49,7 @@ export default class Study extends Component {
                 if (studyListObj[study.STUDY_ID]) {
                     studyListObj[study.STUDY_ID].DRUGS.push(
                         {
-                            drugId: study.DRUG_ID,
+                            drugId: study.DRUG_DRUG_ID,
                             dosageAmount: study.DOSAGE_AMOUNT,
                             dosageUnit: study.DOSAGE_UNIT,
                             treatmentIntTime: study.TREATMENT_INTERVAL_TIME,
@@ -66,21 +67,21 @@ export default class Study extends Component {
                         PI_LAST_NAME: study.PI_LAST_NAME,
                         CONDITION_ID: study.CONDITION_ID,
                         CONDITON: study.CONDITON,
-                        DRUGS: [
+                        DRUGS: study.DRUG_DRUG_ID ? [
                             {
-                                drugId: study.DRUG_ID,
+                                drugId: study.DRUG_DRUG_ID,
                                 dosageAmount: study.DOSAGE_AMOUNT,
                                 dosageUnit: study.DOSAGE_UNIT,
                                 treatmentIntTime: study.TREATMENT_INTERVAL_TIME,
                                 treatmentIntType: study.TREATMENT_INTERVAL_TYPE
                             }
-                        ],
+                        ] : [],
                         COMPLETED: study.COMPLETED,
                         SUCCESSFUL: study.SUCCESSFUL
                     }
                 }
             });
-            
+
             self.setState({studies: Object.values(studyListObj)});
         })
     }
@@ -107,14 +108,17 @@ export default class Study extends Component {
                         {this.state.showPopup ?
                             <Popup
                                 header='Add Study'
-                                children='hi'
+                                children={<AddStudyForm />}
                                 closePopup={this.togglePopup.bind(this)}
                             />
                             : null
                         }
                 </div>
                 <div>
-                    <StudyTable studies={this.state.studies}/>
+                    <StudyTable studies={this.state.studies}
+                                drugs={this.state.drugs}
+                                onClose={this.loadStudiesFromServer.bind(this)}
+                    />
                 </div>
             </div>
         );
