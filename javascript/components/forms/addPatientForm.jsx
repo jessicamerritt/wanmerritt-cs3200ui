@@ -34,7 +34,7 @@ export default class AddPatientForm extends React.Component {
 
         var self = this;
         self.props.onClose();
-        fetch('http://localhost:8080/api/study/patient', {
+        fetch('https://merrittwan-cs3200.herokuapp.com/api/study/patient', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

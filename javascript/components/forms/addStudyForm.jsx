@@ -42,7 +42,7 @@ export default class AddPatientForm extends React.Component {
 
     loadDrugsFromServer() {
         var self = this;
-        fetch("http://localhost:8080/api/drug/all"
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/drug/all"
         ).then(function(response) {
             return response.json();
         }).then(function (data) {
@@ -58,7 +58,7 @@ export default class AddPatientForm extends React.Component {
 
         var self = this;
         self.props.onClose();
-        fetch('http://localhost:8080/api/study/new', {
+        fetch('https://merrittwan-cs3200.herokuapp.com/api/study/new', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

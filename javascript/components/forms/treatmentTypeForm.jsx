@@ -22,7 +22,7 @@ export default class TreatmentTypeForm extends React.Component {
 
     handleSubmit(event) {
         var self = this;
-        fetch('http://localhost:8080/api/study/treatment?studyId=' + self.props.studyId +
+        fetch('https://merrittwan-cs3200.herokuapp.com/api/study/treatment?studyId=' + self.props.studyId +
               '&placebo=' + self.state.treatmentType
         ).then(function (response) {
             return response.json();

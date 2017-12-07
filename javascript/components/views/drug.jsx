@@ -21,7 +21,7 @@ export default class Drug extends Component {
 
     loadDrugsFromServer() {
         var self = this;
-        fetch("http://localhost:8080/api/drug/all"
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/drug/all"
         ).then(function(response) {
             return response.json();
         }).then(function (data) {

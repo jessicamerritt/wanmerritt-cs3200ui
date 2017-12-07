@@ -12,7 +12,7 @@ class StudyRow extends React.Component {
 
     handleClose() {
         var self = this;
-        fetch('http://localhost:8080/api/study/new', {
+        fetch('https://merrittwan-cs3200.herokuapp.com/api/study/new', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

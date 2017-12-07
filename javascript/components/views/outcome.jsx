@@ -43,7 +43,7 @@ export default class Outcome extends Component {
 
     loadStudiesFromServer() {
         var self = this;
-        fetch("http://localhost:8080/api/study/all"
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/study/all"
         ).then(function (response) {
             return response.json();
         }).then(function (data) {

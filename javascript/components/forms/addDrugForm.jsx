@@ -18,7 +18,7 @@ export default class AddDrugForm extends React.Component {
 
         var self = this;
         self.props.onClose();
-        fetch('http://localhost:8080/api/drug/new', {
+        fetch('https://merrittwan-cs3200.herokuapp.com/api/drug/new', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

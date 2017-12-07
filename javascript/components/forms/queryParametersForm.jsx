@@ -18,7 +18,7 @@ export default class QueryParametersForm extends React.Component {
 
     handleSubmit(event) {
         var self = this;
-        fetch('http://localhost:8080/api/study/characteristics?studyId=' + self.props.studyId, {
+        fetch('https://merrittwan-cs3200.herokuapp.com/api/study/characteristics?studyId=' + self.props.studyId, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
