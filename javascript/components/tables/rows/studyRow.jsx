@@ -58,7 +58,7 @@ class StudyRow extends React.Component {
     render() {
         if (this.state.visible==false) return null;
         var btn;
-        if (this.props.study.SUCCESSFUL != 'in-progress') {
+        if (this.props.study.COMPLETED) {
             btn = <button className="btn btn-primary disabled" >Close Study</button>
         } else {
             btn = <button className="btn btn-primary " onClick={this.handleClose.bind(this)}>Close Study</button>
