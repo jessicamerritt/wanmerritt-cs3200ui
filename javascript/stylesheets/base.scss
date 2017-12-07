@@ -3,16 +3,9 @@ body {
   background: $backgroundColor;
 }
 
-.btn-circle {
-  width: 60px;
-  height: 60px;
-  text-align: center;
-  padding: 6px 0;
-  font-size: 12px;
-  line-height: 1.42;
-  border-radius: 30px;
-  color: white;
-  background-color: red;
+
+input {
+  border-radius: 5px;
 }
 
 #footer {
