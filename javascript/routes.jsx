@@ -8,6 +8,7 @@ import Drug from './components/views/drug';
 import Patient from "./components/views/patient";
 import Outcome from "./components/views/outcome";
 import Clinician from "./components/views/clinician";
+import PI from "./components/views/pi"
 export default (
     <Route path='/' component={App}>
             <IndexRoute component={Home} />
@@ -17,6 +18,7 @@ export default (
             <Route path='patient' component={Patient} />
             <Route path='outcome' component={Outcome} />
             <Route path='clinician' component={Clinician} />
+            <Route path='principal' component={PI} />
             <Route path='*' component={Home} />
     </Route>
 );
