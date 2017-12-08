@@ -7,11 +7,11 @@ export default class AddStudyForm extends React.Component {
         this.state = {
             description: "",
             selectedDrug: null,
+            otherMC: false,
+            otherDrug: false,
             drugList: [],
             piList: [],
             mcList: [],
-            drugArray: [],
-            drugs: [],
             endDate: "",
             startDate: "",
             medicalCondition: {
@@ -38,11 +38,82 @@ export default class AddStudyForm extends React.Component {
             drugs: [],
         }
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSDrugInputChange = this.handleSDrugInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
 
+    handleMCNameChange(mc) {
+        this.setState({
+            medicalCondition: {
+                name: mc,
+                description: this.state.medicalCondition.description
+            }
+        })
+    }
+
+    handleMCDesChange(mc) {
+        this.setState({
+            medicalCondition: {
+                name: this.state.medicalCondition.name,
+                description: mc
+            }
+        })
+    }
+
+    selectMC(mc) {
+        if(mc.value == "other") {
+            this.setState({
+                otherMC: true,
+                medicalCondition: {
+                    name: "",
+                    description: "",
+                    conditionId: null,
+
+                }
+            });
+            return;
+        }
+        this.setState({
+            otherMC: false,
+            medicalCondition: {
+                conditionId: mc.conditionId,
+                name: mc.name,
+                description: mc.description,
+            }
+        })
+    }
+
     selectDrug(drug) {
-        this.setState({selectedDrug: drug});
+        if (drug.value == "other") {
+            this.setState({
+                otherDrug: true,
+                selectedDrug: {
+                    drugId: null,
+                    marketName: "",
+                    previousSuccess: 0,
+                    scientificName: "",
+                    toxicity: ""
+                }
+            });
+            return;
+        }
+        this.setState({otherDrug: false, selectedDrug: drug});
+    }
+
+    selectPI(pi) {
+        this.setState({
+            principalInvestigator: {
+                email: pi.email,
+                firstName: pi.firstName,
+                address: {
+                    addressId: pi.addressId
+                },
+                institutionId: pi.institutionId,
+                lastName: pi.lastName,
+                phone: pi.phone,
+                principalInvestigatorId: pi.principalInvestigatorId
+            }
+        })
     }
 
     loadDrugsFromServer() {
@@ -62,6 +133,7 @@ export default class AddStudyForm extends React.Component {
                     value: drug.scientificName
                 }
             } );
+            drugList.push({label: 'other', value: 'other'});
             self.setState({drugList: drugList});
 
         }).catch(error => alert('error loading the drugs'));
@@ -111,6 +183,7 @@ export default class AddStudyForm extends React.Component {
                     value: mc.name
                 }
             });
+            mcList.push({label: 'other', value: 'other'});
             self.setState({mcList: mcList});
         }).catch(error => alert('Unable to load the medical conditions at this time'));;
     }
@@ -121,27 +194,40 @@ export default class AddStudyForm extends React.Component {
         this.loadMedicalConditionFromServer();
     }
 
-    addDrugToStudy(drug) {
+    addDrugToStudy() {
+        var drug = this.state.selectedDrug;
         var drugArray = this.state.drugs;
         drugArray.push({
-            drugId: drug.drugId,
-            marketName: drug.marketName,
-            previousSuccess: drug.previousSuccess,
-            scientificName: drug.scientificName,
-            toxicity: drug.toxicity
-        })
+            drug: {
+                drugId: drug.drugId,
+                marketName: drug.marketName,
+                previousSuccess: drug.previousSuccess,
+                scientificName: drug.scientificName,
+                toxicity: drug.toxicity,
+            },
+            dosageAmount: null,
+            dosageUnit: null,
+            treatmentIntervalType: "MONTH",
+            treatmentIntervalTime: null
+        });
         this.setState({
-            drugArray: drugArray
-        })
+            drugs: drugArray,
+            selectedDrug: {},
+            otherDrug: false
+        });
     }
 
 
 
     handleSubmit(event) {
 
+        if(!this.state.medicalCondition || !this.state.principalInvestigator || !this.state.drugs) {
+            alert('Please finish the form');
+            return;
+        }
+        console.log(this.state);
 
         var self = this;
-        self.props.onClose();
         fetch('https://merrittwan-cs3200.herokuapp.com/api/study/new', {
             headers: {
                 'Accept': 'application/json',
@@ -153,20 +239,6 @@ export default class AddStudyForm extends React.Component {
                 completed: false,
                 description: self.state.description,
                 drugs: self.state.drugs,
-               /* {
-                    "dosageAmount": 10,
-                    "dosageUnit": "ml",
-                    "drug": {
-                        "drugId": 0,
-                        "marketName": "Bleomycin",
-                        "scientificName": "",
-                        "toxicity": "",
-                        "previousSuccess": 0
-                    },
-                    "treatmentIntervalTime": 10,
-                    "treatmentIntervalType": "MONTH"
-                }
-            ],*/
                 endDate: self.state.endDate,
                 medicalCondition: self.state.medicalCondition,
                 principalInvestigator: self.state.principalInvestigator,
@@ -177,7 +249,12 @@ export default class AddStudyForm extends React.Component {
         }).catch(function (error) {
             console.log(error);
             alert('We are unable to add the study at this moment');
-        }).then(function() {
+            return;
+        }).then(function(resp) {
+            if (resp.status == 500) {
+                alert('Please complete the form');
+                return;
+            }
             self.props.onSuccess();
             alert('Success');
         });
@@ -194,7 +271,82 @@ export default class AddStudyForm extends React.Component {
         });
     }
 
+    handleSDrugInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+
+        this.setState({
+            selectedDrug : Object.assign(
+                {},
+                this.state.selectedDrug,
+                {[name]: value}
+
+            )
+        });
+    }
+
     render() {
+        var mcOther = this.state.otherMC ?
+            <div>
+            <label>
+                Medical Condition Name:
+                <input
+                    name="mcName"
+                    type="text"
+                    value={this.state.medicalCondition.name}
+                    onChange={this.handleMCNameChange} />
+            </label>
+            <label>
+                Description:
+                <textarea
+                    name="description"
+                    value={this.state.medicalCondition.description}
+                    onChange={this.handleMCDesChange} />
+            </label>
+            </div> :
+            null;
+
+        var drugOther = this.state.otherDrug ?
+            <div>
+                <label>
+                    Market Name:
+                    <input
+                        name="marketName"
+                        type="text"
+                        value={this.state.selectedDrug ? this.state.selectedDrug.marketName : ""}
+                        onChange={this.handleSDrugInputChange} />
+                </label>
+                <br />
+                <label>
+                    Scientific Name:
+                    <input
+                        name="scientificName"
+                        type="text"
+                        value={this.state.selectedDrug ? this.state.selectedDrug.scientificName : ""}
+                        onChange={this.handleSDrugInputChange} />
+                </label>
+                <br />
+                <label>
+                    Previous Success:
+                    <input
+                        name="previousSuccess"
+                        type="number"
+                        value={this.state.selectedDrug.previousSuccess}
+                        onChange={this.handleSDrugInputChange} />
+                </label>
+                <br />
+                <label>
+                    Toxicity:
+                    <input
+                        name="toxicity"
+                        type="text"
+                        value={this.state.selectedDrug ? this.state.selectedDrug.toxicity : ""}
+                        onChange={this.handleSDrugInputChange} />
+                </label>
+            </div> :
+            null;
         return (
             <form onSubmit={this.handleSubmit}>
                 <label>
@@ -208,6 +360,7 @@ export default class AddStudyForm extends React.Component {
                 <label>
                     Description:
                     <textarea
+                        name="description"
                         value={this.state.description}
                         onChange={this.handleInputChange} />
                 </label>
@@ -217,21 +370,39 @@ export default class AddStudyForm extends React.Component {
                     <input
                         name="startDate"
                         type="date"
-                        onChange={this.startDate} />
+                        value={this.startDate}
+                        onChange={this.handleInputChange}
+                    />
                 </label>
-                <div>
                 <label >
                     End Date:
-                </label>
                     <input
                         name="endDate"
                         type="date"
-                        onChange={this.endDate} />
-                </div>
+                        value={this.endDate}
+                        onChange={this.handleInputChange}
+                    />
+                </label>
+                <SelectValue name="Medical Condition"
+                             options={this.state.mcList}
+                             value={this.state.otherMC ? 'other' :
+                                 this.state.medicalCondition.name
+                             }
+                             onChange={this.selectMC.bind(this)}/>
+                {mcOther}
+                <SelectValue name="Principal Investigator"
+                             options={this.state.piList}
+                             value={this.state.principalInvestigator ?
+                                 this.state.principalInvestigator.firstName + " " + this.state.principalInvestigator.lastName :
+                                 null
+                             }
+                             onChange={this.selectPI.bind(this)}/>
                 <SelectValue name="Drugs"
                              options={this.state.drugList}
-                             value={this.state.selectedDrug ? this.state.selectedDrug.marketName : null}
+                             value={this.state.otherDrug ? 'other' : this.state.selectedDrug ? this.state.selectedDrug.marketName : ""}
                              onChange={this.selectDrug.bind(this)}/>
+                {drugOther}
+                <button className="btn btn-primary" type="button" onClick={this.addDrugToStudy.bind(this)}>Add Drug </button>
 
                 <div className="row justify-content-center">
                     <input className="btn btn-primary" type="submit" value="Submit" />
