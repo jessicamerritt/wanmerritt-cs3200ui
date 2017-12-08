@@ -138,23 +138,6 @@ export default class UpdatePatientForm extends React.Component {
                         onChange={this.handleInputChange} />
                 </label>
                 <br />
-                <label>
-                    Healthy:
-                    <input
-                        name="healthy"
-                        type="checkbox"
-                        checked={this.state.healthy}
-                        onChange={this.handleInputChange} />
-                </label>
-                <label>
-                    Placebo:
-                    <input
-                        name="placebo"
-                        type="checkbox"
-                        checked={this.state.placebo}
-                        onChange={this.handleInputChange} />
-                </label>
-                <br />
                 <div className="row justify-content-center">
                     <input className="btn btn-primary"  type="submit" value="Submit" />
                 </div>

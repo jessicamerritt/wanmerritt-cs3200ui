@@ -51,7 +51,7 @@ export default class AddPatientForm extends React.Component {
                 dob: this.state.dob,
                 ethnicity: this.state.ethnicity,
                 firstName: this.state.firstName,
-                healthy: this.state.healthy,
+                healthy: false,
                 hometown: this.state.hometown,
                 lastName: this.state.lastName,
                 nationality: this.state.nationality,
@@ -186,14 +186,6 @@ export default class AddPatientForm extends React.Component {
                         onChange={this.handleInputChange} />
                 </label>
                 <br />
-                <label>
-                    Healthy:
-                    <input
-                        name="healthy"
-                        type="checkbox"
-                        checked={this.state.healthy}
-                        onChange={this.handleInputChange} />
-                </label>
                 <label>
                     Placebo:
                     <input
