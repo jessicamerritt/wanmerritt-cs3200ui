@@ -17,7 +17,7 @@ class PatientTable extends React.Component {
                     <thead>
                     <tr>
                         <th>Patient ID</th><th>Date of Birth</th><th>Healthy</th><th>Hometown</th>
-                        <th>Sex</th><th>Race</th><th>Ethnicity</th><th>Placebo</th><th>Actions</th>
+                        <th>Sex</th><th>Race</th><th>Nationality</th><th>Ethnicity</th><th>Placebo</th><th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>{rows}</tbody>
