@@ -115,6 +115,7 @@ export default class Patient extends Component {
                         </div>
                         <div className="col col-lg-4">
                             <SelectValue name="Select Study"
+                                         value={this.state.currentStudy.title}
                                          options={this.state.studyList}
                                          onChange={this.selectStudy.bind(this)}/>
                         </div>

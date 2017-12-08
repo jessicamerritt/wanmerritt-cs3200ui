@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { browserHistory, Link} from 'react-router';
-import DBFooter from '../navigation/dbFooter';
 import WebHeader from "../navigation/webHeader";
 
 export default class Home extends Component {
@@ -47,10 +46,7 @@ export default class Home extends Component {
                         </div>
                     </div>
 
-
-
                 </div>
-                <DBFooter/>
             </div>
         );
     }

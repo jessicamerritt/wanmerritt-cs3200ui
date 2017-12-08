@@ -49,7 +49,8 @@ export default class UpdatePatientForm extends React.Component {
         console.log(this.state);
         return (
             <form onSubmit={this.handleSubmit}>
-                <p> Patient id: {this.props.patientId} </p>
+                <p> Patient id: {this.state.patientId} </p>
+                <p> Patient name: {this.state.firstName + " " + this.state.lastName} </p>
                 <br />
                 <label>
                     Address Line 1:
