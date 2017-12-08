@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SelectValue from "./selectValue";
+import StudyDrugFrom from "./studyDrugForm";
 
 export default class AddStudyForm extends React.Component {
     constructor(props) {
@@ -38,6 +39,7 @@ export default class AddStudyForm extends React.Component {
             drugs: [],
         }
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleInputChangeDrugValues = this.handleInputChangeDrugValues.bind(this);
         this.handleSDrugInputChange = this.handleSDrugInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
@@ -88,16 +90,29 @@ export default class AddStudyForm extends React.Component {
             this.setState({
                 otherDrug: true,
                 selectedDrug: {
-                    drugId: null,
-                    marketName: "",
-                    previousSuccess: 0,
-                    scientificName: "",
-                    toxicity: ""
-                }
-            });
+                    drug: {
+                        drugId: null,
+                        marketName: "",
+                        previousSuccess: 0,
+                        scientificName: "",
+                        toxicity: ""
+                    },
+                dosageAmount: 0,
+                dosageUnit: "",
+                treatmentIntervalType: "",
+                treatmentIntervalTime:  0
+            }});
             return;
         }
-        this.setState({otherDrug: false, selectedDrug: drug});
+        this.setState({
+            otherDrug: false,
+            selectedDrug: {
+                drug: drug,
+                dosageAmount: 0,
+                dosageUnit: "",
+                treatmentIntervalType: "",
+                treatmentIntervalTime:  0
+            }} );
     }
 
     selectPI(pi) {
@@ -195,26 +210,39 @@ export default class AddStudyForm extends React.Component {
     }
 
     addDrugToStudy() {
-        var drug = this.state.selectedDrug;
-        var drugArray = this.state.drugs;
-        drugArray.push({
-            drug: {
-                drugId: drug.drugId,
-                marketName: drug.marketName,
-                previousSuccess: drug.previousSuccess,
-                scientificName: drug.scientificName,
-                toxicity: drug.toxicity,
-            },
-            dosageAmount: null,
-            dosageUnit: null,
-            treatmentIntervalType: "MONTH",
-            treatmentIntervalTime: null
-        });
-        this.setState({
-            drugs: drugArray,
-            selectedDrug: {},
-            otherDrug: false
-        });
+        if (!this.state.selectedDrug || !this.state.selectedDrug.drug ||
+            this.state.selectedDrug.dosageUnit == "" ||
+            this.state.selectedDrug.treatmentIntervalType == ""
+
+        ) {
+            alert('Please finish selecting a drug');
+            return;
+        }
+        try {
+            var drug = this.state.selectedDrug.drug;
+            var drugArray = this.state.drugs;
+            drugArray.push({
+                drug: {
+                    drugId: drug.drugId,
+                    marketName: drug.marketName,
+                    previousSuccess: drug.previousSuccess,
+                    scientificName: drug.scientificName,
+                    toxicity: drug.toxicity,
+                },
+                dosageAmount: this.state.selectedDrug.dosageAmount,
+                dosageUnit: this.state.selectedDrug.dosageUnit,
+                treatmentIntervalType: this.state.selectedDrug.treatmentIntervalType,
+                treatmentIntervalTime:  this.state.selectedDrug.treatmentIntervalTime
+            });
+            this.setState({
+                drugs: drugArray,
+                selectedDrug: {},
+                otherDrug: false
+            });
+        } catch (error) {
+            alert(error);
+        }
+
     }
 
 
@@ -225,7 +253,6 @@ export default class AddStudyForm extends React.Component {
             alert('Please finish the form');
             return;
         }
-        console.log(this.state);
 
         var self = this;
         fetch('https://merrittwan-cs3200.herokuapp.com/api/study/new', {
@@ -251,7 +278,7 @@ export default class AddStudyForm extends React.Component {
             alert('We are unable to add the study at this moment');
             return;
         }).then(function(resp) {
-            if (resp.status == 500) {
+            if (resp.status == 500 || resp.status == 400) {
                 alert('Please complete the form');
                 return;
             }
@@ -281,13 +308,55 @@ export default class AddStudyForm extends React.Component {
             selectedDrug : Object.assign(
                 {},
                 this.state.selectedDrug,
-                {[name]: value}
-
+                {drug: Object.assign({}, this.state.selectedDrug.drug, {[name]: value})}
             )
         });
     }
 
+    selectTreatmentInterval(val) {
+        this.setState({
+            selectedDrug : Object.assign(
+                {},
+                this.state.selectedDrug,
+                {treatmentIntervalType: val.value}
+            )
+        });
+    }
+
+    handleInputChangeDrugValues(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+
+        this.setState({
+            selectedDrug : Object.assign(
+                {},
+                this.state.selectedDrug,
+                {[name]: value}
+            )
+        });
+
+    }
+
     render() {
+
+        var treatmentTypeOptions = [
+            {label: "month", value: "MONTH"},
+            {label: "hour", value: "HOUR"},
+            {label: "minute", value: "MINUTE"},
+            {label: "week", value: "WEEK"},
+            {label: "day", value: "DAY"}
+        ]
+
+
+        var drugsAdded = "Drugs added: ";
+        var key = 1;
+        this.state.drugs.forEach(function(drug) {
+            key ++;
+            drugsAdded = drugsAdded + drug.drug.marketName + " ";
+        });
+
         var mcOther = this.state.otherMC ?
             <div>
             <label>
@@ -370,7 +439,7 @@ export default class AddStudyForm extends React.Component {
                     <input
                         name="startDate"
                         type="date"
-                        value={this.startDate}
+                        value={this.state.startDate}
                         onChange={this.handleInputChange}
                     />
                 </label>
@@ -379,7 +448,7 @@ export default class AddStudyForm extends React.Component {
                     <input
                         name="endDate"
                         type="date"
-                        value={this.endDate}
+                        value={this.state.endDate}
                         onChange={this.handleInputChange}
                     />
                 </label>
@@ -399,11 +468,43 @@ export default class AddStudyForm extends React.Component {
                              onChange={this.selectPI.bind(this)}/>
                 <SelectValue name="Drugs"
                              options={this.state.drugList}
-                             value={this.state.otherDrug ? 'other' : this.state.selectedDrug ? this.state.selectedDrug.marketName : ""}
+                             value={this.state.otherDrug ? 'other' : this.state.selectedDrug && this.state.selectedDrug.drug ? this.state.selectedDrug.drug.marketName : ""}
                              onChange={this.selectDrug.bind(this)}/>
+                <label>
+                    Dosage Amount:
+                    <input
+                        name="dosageAmount"
+                        type="number"
+                        value={this.state.selectedDrug ? this.state.selectedDrug.dosageAmount : 0}
+                        onChange={this.handleInputChangeDrugValues} />
+                </label>
+                <label>
+                    Dosage Unit:
+                    <input
+                        name="dosageUnit"
+                        type="text"
+                        value={this.state.selectedDrug ? this.state.selectedDrug.dosageUnit : ""}
+                        onChange={this.handleInputChangeDrugValues} />
+                </label>
+                <br />
+                <label>
+                    Treatment Interval Time:
+                    <input
+                        name="treatmentIntervalTime"
+                        type="number"
+                        value={this.state.selectedDrug ? this.state.selectedDrug.treatmentIntervalTime : 0}
+                        onChange={this.handleInputChangeDrugValues}
+                    />
+                </label>
+                <SelectValue name="Treatment Interval Type"
+                             options={treatmentTypeOptions}
+                             value={this.state.selectedDrug ? this.state.selectedDrug.treatmentIntervalType : ""}
+                             onChange={this.selectTreatmentInterval.bind(this)}/>
+
+
                 {drugOther}
                 <button className="btn btn-primary" type="button" onClick={this.addDrugToStudy.bind(this)}>Add Drug </button>
-
+                <div>{drugsAdded}</div>
                 <div className="row justify-content-center">
                     <input className="btn btn-primary" type="submit" value="Submit" />
                 </div>

@@ -107,7 +107,7 @@ export default class Study extends Component {
                         {this.state.showPopup ?
                             <Popup
                                 header='Add Study'
-                                children={<AddStudyForm onSuccess={() => console.log('success')}
+                                children={<AddStudyForm onSuccess={this.togglePopup.bind(this)}
                                 />}
                                 closePopup={this.togglePopup.bind(this)}
                             />
