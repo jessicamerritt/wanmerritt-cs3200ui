@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import SelectValue from "./selectValue";
 
 export default class AddPatientForm extends React.Component {
     constructor(props) {
@@ -26,7 +27,24 @@ export default class AddPatientForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         };
 
+    handleEthnicityChange(eth) {
+        this.setState({
+            ethnicity: eth.label
+        })
+    }
 
+    handleRaceChange(race) {
+        this.setState({
+            race: race.label
+        })
+    }
+
+    handleSexChange(sex) {
+        console.log(sex);
+        this.setState({
+            sex: sex.value
+        })
+    }
 
 
     handleSubmit(event) {
@@ -82,6 +100,52 @@ export default class AddPatientForm extends React.Component {
     }
 
     render() {
+
+        const raceOptions=[
+            {
+                label: "White",
+                value: "Caucasian"
+            },
+            {
+                label: "Black or African Ameican",
+                value: "black"
+            },
+            {
+                label: "American Indian or Alaska Native",
+                value: "Native American"
+            },
+            {
+                label: "Asian",
+                value: "Asian"
+            },
+            {
+                label: "Native Hawaiian or Other Pacific Islander",
+                value: "Pacific Islander"
+            }
+        ];
+
+        const ethnicityOptions = [
+            {
+                label: "Hispanic or Latino",
+                value: "hispanic"
+            },
+            {
+                label: "Not Hispanic or Latino",
+                value: "not hispanic"
+            }
+        ];
+
+        const sexOptions=[
+            {
+                label: "Male",
+                value: "MALE"
+            },
+            {
+                label: "Female",
+                value: "FEMALE"
+            }
+        ];
+
         return (
             <form onSubmit={this.handleSubmit}>
                 <label>
@@ -144,28 +208,11 @@ export default class AddPatientForm extends React.Component {
                 </label>
                 <br />
                 <label>
-                    Ethnicity:
-                    <input
-                        name="ethnicity"
-                        type="String"
-                        value={this.state.ethnicity}
-                        onChange={this.handleInputChange} />
-                </label>
-                <label>
                     Nationality:
                     <input
                         name="nationality"
                         type="String"
                         value={this.state.nationality}
-                        onChange={this.handleInputChange} />
-                </label>
-                <br />
-                <label>
-                    Race:
-                    <input
-                        name="race"
-                        type="String"
-                        value={this.state.race}
                         onChange={this.handleInputChange} />
                 </label>
                 <label>
@@ -177,14 +224,22 @@ export default class AddPatientForm extends React.Component {
                         onChange={this.handleInputChange} />
                 </label>
                 <br />
-                <label>
-                    Gender:
-                    <input
-                        name="sex"
-                        type="text"
-                        value={this.state.sex}
-                        onChange={this.handleInputChange} />
-                </label>
+                <SelectValue name="Select Ethnicity"
+                             value={this.state.ethnicity}
+                             options={ethnicityOptions}
+                             onChange={this.handleEthnicityChange.bind(this)}
+                />
+                <SelectValue name="Select race"
+                             value={this.state.race}
+                             options={raceOptions}
+                             onChange={this.handleRaceChange.bind(this)}
+                />
+
+                <SelectValue name="Select sex"
+                             value={this.state.sex}
+                             options={sexOptions}
+                             onChange={this.handleSexChange.bind(this)}
+                />
                 <br />
                 <label>
                     Placebo:

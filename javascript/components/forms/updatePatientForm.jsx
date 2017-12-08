@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import SelectValue from './selectValue';
 
 export default class UpdatePatientForm extends React.Component {
     constructor(props) {
@@ -13,7 +14,6 @@ export default class UpdatePatientForm extends React.Component {
 
     handleSubmit(event) {
 
-        console.log(this.state);
         var self = this;
         self.props.onClose();
         fetch('https://merrittwan-cs3200.herokuapp.com/api/study/patient', {
@@ -35,6 +35,25 @@ export default class UpdatePatientForm extends React.Component {
         event.preventDefault();
     }
 
+    handleEthnicityChange(eth) {
+        this.setState({
+            ethnicity: eth.label
+        })
+    }
+
+    handleRaceChange(race) {
+        this.setState({
+            race: race.label
+        })
+    }
+
+    handleSexChange(sex) {
+        console.log(sex);
+        this.setState({
+            sex: sex.value
+        })
+    }
+
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -46,7 +65,50 @@ export default class UpdatePatientForm extends React.Component {
     }
 
     render() {
-        console.log(this.state);
+        const raceOptions=[
+            {
+                label: "White",
+                value: "Caucasian"
+            },
+            {
+                label: "Black or African Ameican",
+                value: "black"
+            },
+            {
+                label: "American Indian or Alaska Native",
+                value: "Native American"
+            },
+            {
+                label: "Asian",
+                value: "Asian"
+            },
+            {
+                label: "Native Hawaiian or Other Pacific Islander",
+                value: "Pacific Islander"
+            }
+        ];
+
+        const ethnicityOptions = [
+            {
+                label: "Hispanic or Latino",
+                value: "hispanic"
+            },
+            {
+                label: "Not Hispanic or Latino",
+                value: "not hispanic"
+            }
+        ];
+
+        const sexOptions=[
+            {
+                label: "Male",
+                value: "MALE"
+            },
+            {
+                label: "Female",
+                value: "FEMALE"
+            }
+        ];
         return (
             <form onSubmit={this.handleSubmit}>
                 <p> Patient id: {this.state.patientId} </p>
@@ -94,15 +156,6 @@ export default class UpdatePatientForm extends React.Component {
                         value={this.state.dob}
                         onChange={this.handleInputChange} />
                 </label>
-                <br />
-                <label>
-                    Ethnicity:
-                    <input
-                        name="ethnicity"
-                        type="String"
-                        value={this.state.ethnicity}
-                        onChange={this.handleInputChange} />
-                </label>
                 <label>
                     Nationality:
                     <input
@@ -112,31 +165,22 @@ export default class UpdatePatientForm extends React.Component {
                         onChange={this.handleInputChange} />
                 </label>
                 <br />
-                <label>
-                    Race:
-                    <input
-                        name="race"
-                        type="String"
-                        value={this.state.race}
-                        onChange={this.handleInputChange} />
-                </label>
-                <label>
-                    Hometown:
-                    <input
-                        name="hometown"
-                        type="String"
-                        value={this.state.hometown}
-                        onChange={this.handleInputChange} />
-                </label>
-                <br />
-                <label>
-                    Gender:
-                    <input
-                        name="sex"
-                        type="text"
-                        value={this.state.sex}
-                        onChange={this.handleInputChange} />
-                </label>
+                <SelectValue name="Select Ethnicity"
+                             value={this.state.ethnicity}
+                             options={ethnicityOptions}
+                             onChange={this.handleEthnicityChange.bind(this)}
+                />
+                <SelectValue name="Select race"
+                             value={this.state.race}
+                             options={raceOptions}
+                             onChange={this.handleRaceChange.bind(this)}
+                />
+
+                <SelectValue name="Select sex"
+                             value={this.state.sex}
+                             options={sexOptions}
+                             onChange={this.handleSexChange.bind(this)}
+                />
                 <br />
                 <div className="row justify-content-center">
                     <input className="btn btn-primary"  type="submit" value="Submit" />
