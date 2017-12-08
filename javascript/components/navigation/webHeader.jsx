@@ -19,9 +19,6 @@ export default class WebHeader extends Component {
                             <Link className="nav-link" to="/study">Studies</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/address">Addresses</Link>
-                        </li>
-                        <li className="nav-item">
                             <Link className="nav-link" to="/drug"> Drugs</Link>
                         </li>
                         <li className="nav-item">
