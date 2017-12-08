@@ -7,6 +7,11 @@ class PatientRow extends React.Component {
         self.props.update(self.props.patient);
     }
 
+    recordValues() {
+        var self = this;
+        self.props.recordValues(self.props.patient);
+    }
+
     render() {
         return (
             <tr>
@@ -21,8 +26,8 @@ class PatientRow extends React.Component {
                 <td>{this.props.patient.placebo ? 'true' : 'false'}</td>
                 <td>
                     <button className="btn btn-primary" onClick={this.updateInfo.bind(this)}>Update Info</button>
-                    <br />
-                    <button className="btn btn-primary" onClick={() => console.log('c')}>Record Values</button>
+
+                    <button className="btn btn-primary" onClick={this.recordValues.bind(this)}>Record Values</button>
                 </td>
             </tr>);
     }

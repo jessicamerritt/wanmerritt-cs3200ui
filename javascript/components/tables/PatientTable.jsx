@@ -9,6 +9,7 @@ class PatientTable extends React.Component {
             rows.push(<PatientRow patient={patient}
                                   key={patient.patientId}
                                   update={self.props.updatePatient}
+                                  recordValues={self.props.recordValues}
             />);
         });
         return (

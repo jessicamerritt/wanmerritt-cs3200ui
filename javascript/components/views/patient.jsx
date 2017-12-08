@@ -5,6 +5,7 @@ import Popup from "../forms/popup";
 import SelectValue from "../forms/selectValue";
 import AddPatientForm from "../forms/addPatientForm";
 import UpdatePatientForm from "../forms/updatePatientForm";
+import RecordMeasuredValueForm from "../forms/recordMeasuredValueForm";
 
 
 export default class Patient extends Component {
@@ -14,7 +15,9 @@ export default class Patient extends Component {
             patients: {},
             showPopup: false,
             showUpdate: false,
+            showRecord: false,
             patientToUpdate: {},
+            patientToRecord:{},
             currentStudy: {
                 id: 4,
                 title: 'Bleomycin for Hodgkin\'s Lymphoma',
@@ -33,6 +36,12 @@ export default class Patient extends Component {
         this.setState({
             showPopup: ! this.state.showPopup
         });
+    }
+
+    toggleRecord() {
+        this.setState({
+            showRecord: ! this.show.record
+        })
     }
 
     loadPatientsFromServer() {
@@ -62,10 +71,17 @@ export default class Patient extends Component {
         this.loadPatientsFromServer();
     }
 
+    recordValues(patient) {
+        this.setState({
+            patientToRecord: patient
+        });
+        this.toggleRecord();
+    }
+
     updatePatient(patient) {
         this.setState({
             patientToUpdate: patient
-        })
+        });
         this.toggleUpdate();
     }
 
@@ -142,6 +158,17 @@ export default class Patient extends Component {
                                                       studyId={this.state.currentStudy.id}
                                                       patient={this.state.patientToUpdate}
                                                       onClose={this.toggleUpdate.bind(this)}/>}
+                            closePopup={this.toggleUpdate.bind(this)}
+                        />
+                        : null
+                    }
+                    {this.state.showRecord ?
+                        <Popup
+                            header='Record Measured Value'
+                            children={<RecordMeasuredValueForm onSuccess={this.loadPatientsFromServer.bind(this)}
+                                                         studyId={this.state.currentStudy.id}
+                                                         patient={this.state.patientToUpdate}
+                                                         onClose={this.toggleRecord.bind(this)}/>}
                             closePopup={this.toggleUpdate.bind(this)}
                         />
                         : null
