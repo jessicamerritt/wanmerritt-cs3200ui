@@ -1,10 +1,16 @@
 import React, { Component } from "react";
+import SelectValue from "./selectValue";
 
-export default class AddPatientForm extends React.Component {
+export default class AddStudyForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             description: "",
+            selectedDrug: null,
+            drugList: [],
+            piList: [],
+            mcList: [],
+            drugArray: [],
             drugs: [],
             endDate: "",
             startDate: "",
@@ -16,18 +22,14 @@ export default class AddPatientForm extends React.Component {
             principalInvestigator: {
                 email: "",
                 firstName: "",
-                institution: {
-                    address: {
-                        addressId: null,
-                        street: "",
-                        city: "",
-                        state: "",
-                        zip: ""
-                    },
-                    institutionId: null,
-                    name: "",
-                    type: ""
+                address: {
+                    addressId: null,
+                    street: "",
+                    city: "",
+                    state: "",
+                    zip: ""
                 },
+                institutionId: null,
                 lastName: "",
                 phone: "",
                 principalInvestigatorId: null
@@ -39,6 +41,9 @@ export default class AddPatientForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     };
 
+    selectDrug(drug) {
+        this.setState({selectedDrug: drug});
+    }
 
     loadDrugsFromServer() {
         var self = this;
@@ -46,9 +51,88 @@ export default class AddPatientForm extends React.Component {
         ).then(function(response) {
             return response.json();
         }).then(function (data) {
-            self.setState({drugs: data});
+            var drugList = data.map(function(drug) {
+                return {
+                    drugId: drug.drugId,
+                    marketName: drug.marketName,
+                    previousSuccess: drug.previousSuccess,
+                    scientificName: drug.scientificName,
+                    toxicity: drug.toxicity,
+                    label: drug.marketName,
+                    value: drug.scientificName
+                }
+            } );
+            self.setState({drugList: drugList});
 
-        });
+        }).catch(error => alert('error loading the drugs'));
+    }
+
+    loadPiFromServer() {
+        var self = this;
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/principal/all"
+        ).then(function(response) {
+            return response.json();
+        }).then(function (data) {
+            var piList = data["#result-set-1"].map(function(pi) {
+                return {
+                    email: pi.EMAIL,
+                    firstName: pi.FIRST_NAME,
+                    address: {
+                        addressId: pi.ADDRESS_ID,
+                        street: pi.STREET,
+                        city: pi.CITY,
+                        state: pi.STATE,
+                        zip: pi.ZIP
+                    },
+                    institutionId: pi.INSTITUTION_ID,
+                    lastName: pi.LAST_NAME,
+                    phone: pi.PHONE,
+                    principalInvestigatorId: pi.PRINCIPAL_INVESTIGATOR_ID,
+                    label: pi.FIRST_NAME + " " + pi.LAST_NAME,
+                    value: pi.EMAIL
+                }
+            });
+            self.setState({piList: piList});
+        }).catch(error => alert('error loading the Principal Investigators'));;
+    }
+
+    loadMedicalConditionFromServer() {
+        var self = this;
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/condition/all"
+        ).then(function(response) {
+            return response.json();
+        }).then(function (data) {
+            var mcList = data.map(function(mc) {
+                return {
+                    conditionId: mc.conditionId,
+                    name: mc.name,
+                    description: mc.description,
+                    label: mc.name,
+                    value: mc.name
+                }
+            });
+            self.setState({mcList: mcList});
+        }).catch(error => alert('Unable to load the medical conditions at this time'));;
+    }
+
+    componentDidMount() {
+        this.loadDrugsFromServer();
+        this.loadPiFromServer();
+        this.loadMedicalConditionFromServer();
+    }
+
+    addDrugToStudy(drug) {
+        var drugArray = this.state.drugs;
+        drugArray.push({
+            drugId: drug.drugId,
+            marketName: drug.marketName,
+            previousSuccess: drug.previousSuccess,
+            scientificName: drug.scientificName,
+            toxicity: drug.toxicity
+        })
+        this.setState({
+            drugArray: drugArray
+        })
     }
 
 
@@ -87,7 +171,7 @@ export default class AddPatientForm extends React.Component {
                 medicalCondition: self.state.medicalCondition,
                 principalInvestigator: self.state.principalInvestigator,
                 startDate: self.state.startDate,
-                successful: "in_progress",
+                successful: "IN_PROGRESS",
                 title: self.state.title,
             })
         }).catch(function (error) {
@@ -135,17 +219,24 @@ export default class AddPatientForm extends React.Component {
                         type="date"
                         onChange={this.startDate} />
                 </label>
-                <label>
+                <div>
+                <label >
                     End Date:
+                </label>
                     <input
                         name="endDate"
                         type="date"
                         onChange={this.endDate} />
-                </label>
+                </div>
+                <SelectValue name="Drugs"
+                             options={this.state.drugList}
+                             value={this.state.selectedDrug ? this.state.selectedDrug.marketName : null}
+                             onChange={this.selectDrug.bind(this)}/>
 
                 <div className="row justify-content-center">
                     <input className="btn btn-primary" type="submit" value="Submit" />
                 </div>
+
             </form>
         );
     }

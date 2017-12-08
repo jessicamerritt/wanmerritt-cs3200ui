@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import WebHeader from "../navigation/webHeader";
-import DBFooter from "../navigation/dbFooter";
 import Popup from "../forms/popup";
 import StudyTable from "../tables/StudyTable";
 import AddStudyForm from "../forms/addStudyForm";

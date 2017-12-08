@@ -29,7 +29,7 @@ export default class QueryParametersForm extends React.Component {
             return response.json();
         }).then(function (data) {
             self.props.callback(data);
-        });
+        }).catch(err => alert("We are unable to complete that request"));
         event.preventDefault();
     }
 
@@ -46,7 +46,7 @@ export default class QueryParametersForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <h4>Patient Characteristics</h4>
+                <h4>Search by Patient Characteristics</h4>
 
                 <label>
                     Date of Birth:

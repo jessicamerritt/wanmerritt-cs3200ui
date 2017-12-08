@@ -9,42 +9,12 @@ import 'react-virtualized-select/styles.css';
 export default class SelectValue extends React.Component {
 
 
-
-
     render() {
-        const opts =[
-            {
-                value: '1',
-                label: 'hit',
-                id: 'meh'
 
-            },
-            {
-                value: '2',
-                label: 'foo',
-                id: 'meh'
-
-
-
-            },
-            {
-                value: '4',
-                label: 'bar',
-                id: 'meh'
-
-
-            },
-            {
-                value: '5',
-                label: 'bar',
-                id: 'meh'
-
-
-            },
-        ];
         return (
             <div>
                 <h4> {this.props.name} </h4>
+                <h5> Selected value:  {this.props.value} </h5>
             <Select
                 name={this.props.name}
                 value="one"

@@ -49,7 +49,7 @@ export default class AddPatientForm extends React.Component {
                     zip: this.state.zip,
                 },
                 dob: this.state.dob,
-                ethnicity: this.state.ethnicuty,
+                ethnicity: this.state.ethnicity,
                 firstName: this.state.firstName,
                 healthy: this.state.healthy,
                 hometown: this.state.hometown,

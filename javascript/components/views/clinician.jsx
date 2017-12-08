@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import WebHeader from "../navigation/webHeader";
-import PatientTable from "../tables/PatientTable";
+import ClinicianTable from "../tables/ClinicianTable";
 import Popup from "../forms/popup";
 import SelectValue from "../forms/selectValue";
-import AddPatientForm from "../forms/addPatientForm";
+import AddClinicianForm from "../forms/addClinicianForm";
 
-export default class Patient extends Component {
+export default class Clinician extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            patients: {},
+            clinicians: {},
             showPopup: false,
             currentStudy: {
                 id: 4,
@@ -25,23 +25,27 @@ export default class Patient extends Component {
         });
     }
 
-    loadPatientsFromServer() {
+    loadCliniciansFromServer(val) {
         var self = this;
-        fetch("https://merrittwan-cs3200.herokuapp.com/api/patient/all"
+        var id = val ? val : self.state.currentStudy.id;
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/clinician/study?studyId=" + id
         ).then(function(response) {
+
             return response.json();
         }).then(function (data) {
-            var patientsData = {};
-            data.forEach(function(patient) {
-                var patientOnStudy = patientsData[patient.studyId] == null ? [] : patientsData[patient.studyId];
-                patientOnStudy.push(patient);
-                patientsData[patient.studyId] = patientOnStudy;
+            var cliniciansData = {};
+
+            data.forEach(function(clinician) {
+                var clinicianOnStudy = cliniciansData[clinician.studyId] == null ? [] : cliniciansData[clinician.studyId];
+                clinicianOnStudy.push(clinician.clinician);
+                cliniciansData[clinician.studyId] = clinicianOnStudy;
             })
-            self.setState({patients: patientsData});
+            self.setState({clinicians: cliniciansData});
         });
     }
 
     selectStudy(val) {
+
         this.setState({
             currentStudy: {
                 id: val.id,
@@ -49,7 +53,7 @@ export default class Patient extends Component {
                 condition: val.value,
             }
         })
-        this.loadPatientsFromServer();
+        this.loadCliniciansFromServer(val.id);
     }
 
 
@@ -68,9 +72,9 @@ export default class Patient extends Component {
                 };
             });
             var seen = {};
-           var studies = simplified.filter(function(val) {
-               var valId = val.id;
-               return seen[valId] ? false : (seen[valId] = true);
+            var studies = simplified.filter(function(val) {
+                var valId = val.id;
+                return seen[valId] ? false : (seen[valId] = true);
             });
 
             self.setState({studyList: studies});
@@ -80,7 +84,7 @@ export default class Patient extends Component {
 
 
     componentDidMount() {
-        this.loadPatientsFromServer();
+        this.loadCliniciansFromServer();
         this.loadStudiesFromServer();
     }
 
@@ -90,7 +94,7 @@ export default class Patient extends Component {
                 <WebHeader />
 
                 <div className="content" >
-                    <h2> Patient Table </h2>
+                    <h2> Clinician Table </h2>
 
                     <div className="row justify-content-end">
                         <div className="col col-lg-5">
@@ -98,27 +102,28 @@ export default class Patient extends Component {
                         </div>
                         <div className="col col-lg-4">
                             <SelectValue name="Select Study"
+                                         value={this.state.currentStudy.title}
                                          options={this.state.studyList}
                                          onChange={this.selectStudy.bind(this)}/>
                         </div>
                         <div className="col col-lg-2">
 
-                            <button className="btn btn-primary" onClick={this.togglePopup.bind(this)}>Add Patient</button>
+                            <button className="btn btn-primary" onClick={this.togglePopup.bind(this)}>Add Clinician</button>
                         </div>
                     </div>
                     {this.state.showPopup ?
                         <Popup
-                            header='Add Patient to Study'
-                            children={<AddPatientForm onSuccess={this.loadPatientsFromServer.bind(this)}
+                            header='Add Clinician to Study'
+                            children={<AddClinicianForm onSuccess={this.loadCliniciansFromServer.bind(this)}
                                                       studyId={this.state.currentStudy.id}
-                                                   onClose={this.togglePopup.bind(this)}/>}
+                                                      onClose={this.togglePopup.bind(this)}/>}
                             closePopup={this.togglePopup.bind(this)}
                         />
                         : null
                     }
 
                     <div>
-                        <PatientTable patients={this.state.patients[this.state.currentStudy.id] || []}/>
+                        <ClinicianTable clinicians={this.state.clinicians[this.state.currentStudy.id] || []}/>
                     </div>
                 </div>
 

@@ -77,11 +77,9 @@ export default class Outcome extends Component {
                     <h2> Outcomes Table </h2>
 
                     <div className="row">
-                        <div className="col col-lg-3 offset-lg-3">
-                            <h3>Selected Study: {this.state.currentStudy.title}</h3>
-                        </div>
-                        <div className="col col-lg-3">
+                        <div className="col col-md-3 offset-md-3">
                             <SelectValue name="Select Study"
+                                         value={this.state.currentStudy.title}
                                          options={this.state.studyList}
                                          onChange={this.selectStudy.bind(this)}/>
                         </div>

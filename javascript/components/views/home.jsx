@@ -47,12 +47,10 @@ export default class Home extends Component {
                         </div>
                     </div>
 
-                    <DBFooter/>
-
-
 
 
                 </div>
+                <DBFooter/>
             </div>
         );
     }

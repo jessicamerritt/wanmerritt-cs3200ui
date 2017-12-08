@@ -13,9 +13,13 @@ class DrugRow extends React.Component {
         fetch("https://merrittwan-cs3200.herokuapp.com/api/drug/delete?drugId=" + self.props.drug.drugId, {
             method: 'delete'
         }).then(function(response) {
-            self.setState({visible: false});
+            if(response.status == 200) {
+                self.setState({visible: false});
+            }
+            alert("This drug cannot be deleted. It is attached to an existing study");
         }).catch(function() {
-                console.log("error");
+            self.setState({visible: true});
+                alert("Unable to delete the requested drug. Please try again later");
             }
         );
     }

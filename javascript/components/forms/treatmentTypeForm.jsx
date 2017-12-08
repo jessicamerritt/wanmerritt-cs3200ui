@@ -5,7 +5,7 @@ export default class TreatmentTypeForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            treatmentType: "",
+            treatmentType: false,
             options: [
                 {
                     label: "placebo",
@@ -28,7 +28,7 @@ export default class TreatmentTypeForm extends React.Component {
             return response.json();
         }).then(function (data) {
             self.props.callback(data);
-        });
+        }).catch(err => alert('We are unable to complete that search, please check your formatting'));
         event.preventDefault();
     }
 
@@ -52,8 +52,9 @@ export default class TreatmentTypeForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div>
-                    <SelectValue name="Select Treatment Type"
+                    <SelectValue name="Search by Treatment Type"
                                  options={this.state.options}
+                                 value={this.state.treatmentType ? 'placebo' : 'drug'}
                                  onChange={this.selectTreatmentType.bind(this)}/>
                 </div>
                 <div className="row justify-content-center">

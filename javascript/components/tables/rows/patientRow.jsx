@@ -1,27 +1,8 @@
 import React from 'react';
 
 class PatientRow extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            visible: true,
-        }
-    }
-
-    handleDelete() {
-        var self = this;
-        fetch("/api/patient/delete?patientId=" + self.props.patient.patientId, {
-            method: 'delete'
-        }).then(function(response) {
-            self.setState({visible: false});
-        }).catch(function() {
-                console.log("error");
-            }
-        );
-    }
 
     render() {
-        if (this.state.visible==false) return null;
         return (
             <tr>
                 <td>{this.props.patient.patientId}</td>
