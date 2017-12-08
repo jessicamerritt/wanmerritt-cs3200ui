@@ -3,9 +3,13 @@ import PatientRow from './rows/patientRow';
 
 class PatientTable extends React.Component {
     render() {
+        var self = this;
         var rows = [];
         this.props.patients.forEach(function(patient) {
-            rows.push(<PatientRow patient={patient} key={patient.patientId}/>);
+            rows.push(<PatientRow patient={patient}
+                                  key={patient.patientId}
+                                  update={self.props.updatePatient}
+            />);
         });
         return (
             <div className="container">

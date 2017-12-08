@@ -12,7 +12,7 @@ class ClinicianTable extends React.Component {
                 <table className="table table-striped">
                     <thead>
                     <tr>
-                        <th>Clinician ID</th><th>First Name</th><th>Last Name </th><th>Actions</th>
+                        <th>Clinician ID</th><th>First Name</th><th>Last Name </th>
                     </tr>
                     </thead>
                     <tbody>{rows}</tbody>

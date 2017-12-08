@@ -2,6 +2,11 @@ import React from 'react';
 
 class PatientRow extends React.Component {
 
+    updateInfo() {
+        var self = this;
+        self.props.update(self.props.patient);
+    }
+
     render() {
         return (
             <tr>
@@ -14,7 +19,7 @@ class PatientRow extends React.Component {
                 <td>{this.props.patient.ethnicity}</td>
                 <td>{this.props.patient.placebo ? 'true' : 'false'}</td>
                 <td>
-                    <button className="btn btn-primary" onClick={() => console.log(this.props.patient.patientId)}>Update Info</button>
+                    <button className="btn btn-primary" onClick={this.updateInfo.bind(this)}>Update Info</button>
                 </td>
             </tr>);
     }

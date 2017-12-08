@@ -4,6 +4,8 @@ import PatientTable from "../tables/PatientTable";
 import Popup from "../forms/popup";
 import SelectValue from "../forms/selectValue";
 import AddPatientForm from "../forms/addPatientForm";
+import UpdatePatientForm from "../forms/updatePatientForm";
+
 
 export default class Patient extends Component {
     constructor(props) {
@@ -11,12 +13,20 @@ export default class Patient extends Component {
         this.state = {
             patients: {},
             showPopup: false,
+            showUpdate: false,
+            patientToUpdate: {},
             currentStudy: {
                 id: 4,
                 title: 'Bleomycin for Hodgkin\'s Lymphoma',
             },
             studyList: []
         }
+    }
+
+    toggleUpdate() {
+        this.setState({
+            showUpdate: ! this.state.showUpdate
+        });
     }
 
     togglePopup() {
@@ -50,6 +60,13 @@ export default class Patient extends Component {
             }
         })
         this.loadPatientsFromServer();
+    }
+
+    updatePatient(patient) {
+        this.setState({
+            patientToUpdate: patient
+        })
+        this.toggleUpdate();
     }
 
 
@@ -117,8 +134,21 @@ export default class Patient extends Component {
                         : null
                     }
 
+                    {this.state.showUpdate ?
+                        <Popup
+                            header='Update Patient Information'
+                            children={<UpdatePatientForm onSuccess={this.loadPatientsFromServer.bind(this)}
+                                                      studyId={this.state.currentStudy.id}
+                                                      patient={this.state.patientToUpdate}
+                                                      onClose={this.toggleUpdate.bind(this)}/>}
+                            closePopup={this.toggleUpdate.bind(this)}
+                        />
+                        : null
+                    }
+
                     <div>
-                        <PatientTable patients={this.state.patients[this.state.currentStudy.id] || []}/>
+                        <PatientTable updatePatient={this.updatePatient.bind(this)}
+                                      patients={this.state.patients[this.state.currentStudy.id] || []}/>
                     </div>
                 </div>
 
