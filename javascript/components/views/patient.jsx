@@ -40,8 +40,8 @@ export default class Patient extends Component {
 
     toggleRecord() {
         this.setState({
-            showRecord: ! this.show.record
-        })
+            showRecord: ! this.state.showRecord
+        });
     }
 
     loadPatientsFromServer() {
@@ -167,15 +167,16 @@ export default class Patient extends Component {
                             header='Record Measured Value'
                             children={<RecordMeasuredValueForm onSuccess={this.loadPatientsFromServer.bind(this)}
                                                          studyId={this.state.currentStudy.id}
-                                                         patient={this.state.patientToUpdate}
+                                                         patient={this.state.patientToRecord}
                                                          onClose={this.toggleRecord.bind(this)}/>}
-                            closePopup={this.toggleUpdate.bind(this)}
+                            closePopup={this.toggleRecord.bind(this)}
                         />
                         : null
                     }
 
                     <div>
                         <PatientTable updatePatient={this.updatePatient.bind(this)}
+                                      recordValues={this.recordValues.bind(this)}
                                       patients={this.state.patients[this.state.currentStudy.id] || []}/>
                     </div>
                 </div>

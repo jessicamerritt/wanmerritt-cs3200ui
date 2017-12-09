@@ -4,6 +4,7 @@ import PatientTable from "../tables/PatientTable";
 import SelectValue from "../forms/selectValue";
 import QueryParametersForm from "../forms/queryParametersForm";
 import TreatmentTypeForm from "../forms/treatmentTypeForm";
+import PatientTableInactive from "../tables/PatientTableInactive";
 
 export default class Outcome extends Component {
     constructor(props) {
@@ -97,7 +98,7 @@ export default class Outcome extends Component {
                     </div>
 
                     <div>
-                        <PatientTable patients={this.state.patients || []}/>
+                        <PatientTableInactive patients={this.state.patients || []}/>
                     </div>
                 </div>
 

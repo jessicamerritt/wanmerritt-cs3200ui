@@ -17,7 +17,6 @@ class DrugRow extends React.Component {
                 self.setState({visible: false});
             } else {
                 alert("This drug cannot be deleted. It is attached to an existing study");
-
             }
         }).catch(function() {
             self.setState({visible: true});

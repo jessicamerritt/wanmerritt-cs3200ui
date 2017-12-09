@@ -4,7 +4,22 @@ import SelectValue from './selectValue';
 export default class RecordMeasuredValueForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = this.props.patient;
+        this.state = {
+            clinicians: [],
+            measuredValues: [],
+            selectedClinician: {},
+            selectedMeasuredValue: {},
+            other: false,
+            date: "",
+            maxHealthyAmount: 0,
+            measuredValueId: 0,
+            minHealthyAmount: 0,
+            valueDescription: "",
+            valueName: "",
+            valueUnit: "",
+            patientId: this.props.patient.patientId,
+            valueMeasure: 0
+        };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
@@ -13,46 +28,98 @@ export default class RecordMeasuredValueForm extends React.Component {
 
 
     handleSubmit(event) {
+        console.log(this.state.patientId);
 
         var self = this;
         self.props.onClose();
-        fetch('https://merrittwan-cs3200.herokuapp.com/api/study/patient', {
+        fetch('https://merrittwan-cs3200.herokuapp.com/api/measuredvalue/record', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            method: 'put',
+            method: 'post',
             body: JSON.stringify(
-                self.state
+                {
+                    clinicianId: this.state.selectedClinician.clinicianId,
+                    date: this.state.date,
+                    measuredValue: {
+                        maxHealthyAmount: this.state.maxHealthyAmount,
+                        minHealthyAmount: this.state.minHealthyAmount,
+                        measuredValueId: this.state.measuredValueId,
+                        valueDescription: this.state.valueDescription,
+                        valueName: this.state.valueName,
+                        valueUnit: this.state.valueUnit
+                    },
+                    patientId: this.state.patientId,
+                    valueMeasure: this.state.valueMeasure
+
+                }
             )
         }).catch(function (error) {
             console.log(error);
-            alert('We are unable to update the patient at this moment');
-        }).then(function() {
+            alert('We are unable to add the value at this moment');
+        }).then(function(resp) {
+            if (resp.status != 200) {
+                alert('Failed to record value please try again');
+            }
             self.props.onSuccess();
             alert('Success');
         });
         event.preventDefault();
     }
 
-    handleEthnicityChange(eth) {
-        this.setState({
-            ethnicity: eth.label
-        })
+    componentDidMount() {
+        this.loadCliniciansFromServer();
+        this.loadMeasuredValuesFromServer();
     }
 
-    handleRaceChange(race) {
-        this.setState({
-            race: race.label
-        })
+    loadMeasuredValuesFromServer() {
+        var self = this;
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/measuredvalue/all"
+        ).then(function(response) {
+            if (response.status != 200) {
+                alert('No measured values were loaded');
+                return [];
+            }
+            return response.json();
+        }).then(function (data) {
+            var measuredValues = data.map(function(measuredValue) {
+                return {
+                    maxHealthyAmount: measuredValue.maxHealthyAmount,
+                    minHealthyAmount: measuredValue.minHealthyAmount,
+                    measuredValueId: measuredValue.measuredValueId,
+                    valueDescription: measuredValue.valueDescription,
+                    valueName: measuredValue.valueName,
+                    valueUnit: measuredValue.valueUnit,
+                    label: measuredValue.valueName,
+                    value: measuredValue.valueUnit
+                }
+            });
+
+            measuredValues.push({label: "other", value:"other"});
+
+            self.setState({measuredValues: measuredValues});
+        });
     }
 
-    handleSexChange(sex) {
-        console.log(sex);
-        this.setState({
-            sex: sex.value
-        })
+    loadCliniciansFromServer() {
+        var self = this;
+        fetch("https://merrittwan-cs3200.herokuapp.com/api/clinician/all"
+        ).then(function(response) {
+            return response.json();
+        }).then(function (data) {
+            var clinicians = data.map(function(clinician) {
+                return {
+                    clinicianId: clinician.clinicianId,
+                    label: clinician.firstName + " " + clinician.lastName,
+                    value: clinician.lastName
+                }
+            });
+
+            self.setState({clinicians: clinicians});
+        });
     }
+
 
     handleInputChange(event) {
         const target = event.target;
@@ -64,124 +131,120 @@ export default class RecordMeasuredValueForm extends React.Component {
         });
     }
 
+    selectClinician(val) {
+        this.setState({
+            selectedClinician: val
+        })
+    }
+
+    selectMeasuredValue(val) {
+        if (val.label == "other") {
+            this.setState({
+                other: true,
+                maxHealthyAmount: 0,
+                measuredValueId: null,
+                minHealthyAmount: 0,
+                value: "",
+                valueDescription: "",
+                valueName: "",
+                valueUnit: "",
+                selectedMeasuredValue: {
+                    label: "Other",
+                }
+            })
+            return;
+        }
+        this.setState({
+            other: false,
+            selectedMeasuredValue: val,
+            maxHealthyAmount: val.maxHealthyAmount,
+            measuredValueId: val.measuredValueId,
+            minHealthyAmount: val.minHealthyAmount,
+            value: val.value,
+            valueDescription: val.valueDescription,
+            valueName: val.valueName,
+            valueUnit: val.valueUnit
+        })
+
+    }
+
     render() {
-        const raceOptions=[
-            {
-                label: "White",
-                value: "Caucasian"
-            },
-            {
-                label: "Black or African Ameican",
-                value: "black"
-            },
-            {
-                label: "American Indian or Alaska Native",
-                value: "Native American"
-            },
-            {
-                label: "Asian",
-                value: "Asian"
-            },
-            {
-                label: "Native Hawaiian or Other Pacific Islander",
-                value: "Pacific Islander"
-            }
-        ];
 
-        const ethnicityOptions = [
-            {
-                label: "Hispanic or Latino",
-                value: "hispanic"
-            },
-            {
-                label: "Not Hispanic or Latino",
-                value: "not hispanic"
-            }
-        ];
+        var other = <div>
+            <label>
+                Value Name:
+                <input
+                    name="valueName"
+                    type="text"
+                    value={this.state.valueName}
+                    onChange={this.handleInputChange} />
+            </label>
+            <label>
+                Value Unit:
+                <input
+                    name="valueUnit"
+                    type="text"
+                    value={this.state.valueUnit}
+                    onChange={this.handleInputChange} />
+            </label>
+            <br />
+            <label>
+                Value Description:
+                <textarea
+                    name="valueDescription"
+                    value={this.state.valueDescription}
+                    onChange={this.handleInputChange} />
+            </label>
+            <br />
 
-        const sexOptions=[
-            {
-                label: "Male",
-                value: "MALE"
-            },
-            {
-                label: "Female",
-                value: "FEMALE"
-            }
-        ];
+            <label>
+                Max Healthy Value:
+                <input
+                    name="maxHealthyAmount"
+                    type="number"
+                    value={this.state.maxHealthyAmount}
+                    onChange={this.handleInputChange} />
+            </label>
+            <label>
+                Min Healthy Value:
+                <input
+                    name="minHealthyAmount"
+                    type="number"
+                    value={this.state.minHealthyAmount}
+                    onChange={this.handleInputChange} />
+            </label>
+        </div>;
+
         return (
             <form onSubmit={this.handleSubmit}>
-                <p> Patient id: {this.state.patientId} </p>
-                <p> Patient name: {this.state.firstName + " " + this.state.lastName} </p>
-                <br />
                 <label>
-                    Address Line 1:
+                    Date recorded:
                     <input
-                        name="street"
-                        type="text"
-                        value={this.state.address.street}
-                        onChange={this.handleInputChange} />
-                </label>
-                <label>
-                    City:
-                    <input
-                        name="city"
-                        type="text"
-                        value={this.state.address.city}
-                        onChange={this.handleInputChange} />
-                </label>
-                <br />
-                <label>
-                    State:
-                    <input
-                        name="aState"
-                        type="text"
-                        value={this.state.address.state}
-                        onChange={this.handleInputChange} />
-                </label>
-                <label>
-                    Zip code:
-                    <input
-                        name="zip"
-                        type="text"
-                        value={this.state.address.zip}
-                        onChange={this.handleInputChange} />
-                </label>
-                <br />
-                <label>
-                    Date of Birth:
-                    <input
-                        name="dob"
+                        name="date"
                         type="date"
-                        value={this.state.dob}
+                        value={this.state.date}
                         onChange={this.handleInputChange} />
                 </label>
                 <label>
-                    Nationality:
+                    Value Measured:
                     <input
-                        name="nationality"
-                        type="String"
-                        value={this.state.nationality}
+                        name="valueMeasure"
+                        type="number"
+                        value={this.state.valueMeasure}
                         onChange={this.handleInputChange} />
                 </label>
                 <br />
-                <SelectValue name="Select Ethnicity"
-                             value={this.state.ethnicity}
-                             options={ethnicityOptions}
-                             onChange={this.handleEthnicityChange.bind(this)}
-                />
-                <SelectValue name="Select race"
-                             value={this.state.race}
-                             options={raceOptions}
-                             onChange={this.handleRaceChange.bind(this)}
-                />
+                <SelectValue name="Select Clinician"
+                             value={this.state.selectedClinician ? this.state.selectedClinician.label : ""}
+                             options={this.state.clinicians}
+                             onChange={this.selectClinician.bind(this)}/>
+                <SelectValue name="Select Measured Value Type"
+                             value={this.state.other ? "other" :
+                                 this.state.selectedMeasuredValue ? this.state.selectedMeasuredValue.label : ""}
+                             options={this.state.measuredValues}
+                             onChange={this.selectMeasuredValue.bind(this)}/>
+                {this.state.other ? other : null}
 
-                <SelectValue name="Select sex"
-                             value={this.state.sex}
-                             options={sexOptions}
-                             onChange={this.handleSexChange.bind(this)}
-                />
-                <br />
                 <div className="row justify-content-center">
                     <input className="btn btn-primary"  type="submit" value="Submit" />
                 </div>

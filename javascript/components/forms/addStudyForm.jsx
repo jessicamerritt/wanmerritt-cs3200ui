@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import SelectValue from "./selectValue";
-import StudyDrugFrom from "./studyDrugForm";
 
 export default class AddStudyForm extends React.Component {
     constructor(props) {
